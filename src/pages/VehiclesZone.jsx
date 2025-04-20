@@ -1,7 +1,45 @@
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
 const VehiclesZone = () => {
-  const { store } = useGlobalReducer();
+  const { store, dispatch } = useGlobalReducer();
+  const like = (name) => {
+    dispatch({ type: "Like", payload: name });
+  };
+  const getVehicles = async () => {
+    try {
+      const rawVehicles = localStorage.getItem("starships");
+      if (rawVehicles) {
+        const vehiclesFromLocalStorage = JSON.parse(
+          localStorage.getItem("vehicles")
+        );
+        const action = {
+          type: "GET VEHICLES",
+          payload: vehiclesFromLocalStorage,
+        };
+        dispatch(action);
+      } else {
+        const response = await fetch("https://www.swapi.tech/api/vehicles");
+        if (!response.ok) {
+          throw new Error(`Error fetching vehicles: ${response.status}`);
+        }
+        const data = await response.json();
+        localStorage.setItem("vehicles", JSON.stringify(data.results));
+        const action = {
+          type: "GET VEHICLES",
+          payload: data.results,
+        };
+        dispatch(action);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  useEffect(() => {
+    if (store.vehicles.length === 0) {
+      getVehicles();
+    }
+  });
   return (
     <>
       <div className="container">
@@ -16,9 +54,19 @@ const VehiclesZone = () => {
                 />
                 <div className="card-body">
                   <h5 className="card-title">{vehicle.name}</h5>
-                  <Link to={vehicle.url} className="btn btn-primary">
-                    Go somewhere
+                  <Link
+                    to={`/vehicles/${vehicle.uid}`}
+                    className="btn btn-dark"
+                  >
+                    See More
                   </Link>
+                  <button
+                    onClick={() => like(vehicle.name)}
+                    type="button"
+                    className="btn fs-5"
+                  >
+                    ❤️
+                  </button>
                 </div>
               </div>
             </div>

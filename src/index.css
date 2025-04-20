@@ -1,5 +1,5 @@
 .sidebar {
-  width: 15px; /* Ancho reducido cuando está oculto */
+  width: 50px; /* Ancho reducido cuando está oculto */
   height: 100vh;
   position: fixed;
   top: 0;
@@ -33,4 +33,8 @@
 .scroll-container {
   overflow-x: auto; /* Agrega el desplazamiento horizontal */
   padding-bottom: 10px; /* Espacio para la barra de desplazamiento */
+}
+
+body {
+  background-image: url(assets/img/abstract-white-and-gray-light-gradient-lines-background-free-vector.jpg);
 }

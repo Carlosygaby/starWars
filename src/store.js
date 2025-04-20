@@ -42,6 +42,36 @@ export default function storeReducer(store, action = {}) {
         ...store,
         films: action.payload,
       };
+    case "Like":
+      if (store.likes.includes(action.payload)) {
+        const filtered = store.likes.filter((like) => like !== action.payload);
+        localStorage.setItem("likes", JSON.stringify(filtered));
+        return {
+          ...store,
+          likes: filtered,
+        };
+      } else {
+        localStorage.setItem(
+          "likes",
+          JSON.stringify([...store.likes, action.payload])
+        );
+        return {
+          ...store,
+          likes: [...store.likes, action.payload],
+        };
+      }
+    case "UNLIKE":
+      const filtered = store.likes.filter((likes) => likes !== action.payload);
+      localStorage.setItem("likes", JSON.stringify(filtered));
+      return {
+        ...store,
+        likes: filtered,
+      };
+    case "SET LIKES":
+      return {
+        ...store,
+        likes: action.payload || [],
+      };
     default:
       throw Error("Unknown action.");
   }
